@@ -99,13 +99,13 @@ var TypographyColor =  mutableStateOf(LightTypography)
 var TypographyColorDim =  mutableStateOf(LightTypographyDim)
 var IconColor =  mutableStateOf(LightIcon)
 
-
+// Brush Color
 val ColorPaletteItem1 = Color(0xFFFB9494)
 val ColorPaletteItem2 = Color(0xFF5779F4)
 val ColorPaletteItem3 = Color(0xFFF157F4)
 val ColorPaletteItem4 = Color(0xFFFF6F32)
 val ColorPaletteItem5 = Color(0xFFF82A2A)
-val ColorPaletteItem6 = Color(0xFF688869)
+val ColorPaletteItem6 = Color(0xFF000000)
 val ColorPaletteItem7 = Color(0xFF0CDE6C)
 val ColorPaletteItem8 = Color(0xFFE6F903)
 val ColorPaletteItem9 = Color(0xFF001279)
@@ -116,6 +116,20 @@ val ColorPaletteItem13 = Color(0xFFEB73FF)
 val ColorPaletteItem14 = Color(0xFFF80054)
 val ColorPaletteItem15 = Color(0xFFFF6F64)
 val ColorPaletteItem16 = Color(0xFF00FFE7)
+
+
+
+// Note Color
+
+val ColorNoteItem1 = Color(0xFFFFCDCD)
+val ColorNoteItem2 = Color(0xFFCCD9FF)
+val ColorNoteItem3 = Color(0xFFFDD4FF)
+val ColorNoteItem4 = Color(0xFFFFC8AD)
+val ColorNoteItem5 = Color(0xFFF19B9B)
+val ColorNoteItem6 = Color(0xFF000000)
+val ColorNoteItem7 = Color(0xFFB7FFD4)
+val ColorNoteItem8 = Color(0xFFF6FFB0)
+
 
 fun updateSystemColor(isSystemInDarkMode : Boolean){
     Log.i("RECOMPOSITION", "updateSystemColor: Update Color Change")

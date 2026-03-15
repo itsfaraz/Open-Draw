@@ -15,7 +15,6 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.FloatingActionButton
 import androidx.compose.material.Icon
@@ -26,6 +25,7 @@ import androidx.compose.ui.platform.ComposeView
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.ViewModelProvider
+import androidx.navigation.findNavController
 import com.designlife.opendraw.home.domain.usecase.HomeUseCase
 import com.designlife.opendraw.home.presentation.component.BoardListComponent
 import com.designlife.opendraw.home.presentation.component.HomeBottomComponent
@@ -59,7 +59,6 @@ class HomeFragment : Fragment() {
                     modifier = Modifier.fillMaxSize(),
                     contentAlignment = Alignment.BottomEnd
                 ) {
-
                     Column (
                         modifier = Modifier
                             .fillMaxSize()
@@ -81,7 +80,7 @@ class HomeFragment : Fragment() {
                             }
                         )
                         Spacer(modifier = Modifier.height(30.dp))
-                        BoardListComponent(boardList) { }
+                        BoardListComponent(boardList) {  }
                         Spacer(modifier = Modifier.height(10.dp))
                         if (bottomBarView){
                             HomeBottomComponent(
@@ -91,19 +90,17 @@ class HomeFragment : Fragment() {
                                 },
                                 addCreateBoard = {
                                     viewModel.onEvent(HomeUseCase.CreateBoardEvent)
+                                    findNavController().navigate(R.id.boardFragment)
                                 }
                             )
                         }
                     }
-
-
-
                     FloatingActionButton(
                         modifier = Modifier.Companion
                             .padding(bottom = 65.dp, end = 20.dp)
                             .border(width = 3.dp, color = Color.White, shape = RoundedCornerShape(100))
                             .size(48.dp),
-                        onClick = {   },
+                        onClick = {  },
                         backgroundColor = PrimaryButtonColor,
                     ) {
                         Icon(
@@ -118,5 +115,4 @@ class HomeFragment : Fragment() {
             }
         }
     }
-
 }
