@@ -23,7 +23,7 @@ val ComponentDarkPrimary = Color(0x00262525)
 val TextComponentLight = Color(0xFFD7D7D7)
 
 
-
+val HighlighterColor = Color(0xFF1D5ABC)
 
 
 

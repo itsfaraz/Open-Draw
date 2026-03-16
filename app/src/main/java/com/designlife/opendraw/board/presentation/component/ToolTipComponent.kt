@@ -30,6 +30,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import com.designlife.opendraw.R
@@ -75,8 +76,8 @@ fun ToolTipComponent(
     onInsertEvent : () -> Unit,
     onRedoEvent : () -> Unit,
     onUndoEvent : () -> Unit,
-    onBrushSelected : (size : Int,color : Color) -> Unit,
-    onEraserSelected : (size : Int) -> Unit,
+    onBrushSelected : (size : Float,color : Color) -> Unit,
+    onEraserSelected : (size : Float) -> Unit,
     onShapeSelected : (shapeType : ShapeType) -> Unit,
     onNoteColorSelected : (color : Color) -> Unit
 ) {
@@ -107,46 +108,55 @@ fun ToolTipComponent(
                     horizontalAlignment = Alignment.CenterHorizontally
                 ) {
                     ToolTipItemComponent(
+                        isSelected = selectedToolTip == ToolTipType.BOARD_TEXT,
                         icon = R.drawable.ic_text,
                         onClickEvent = {onTextEvent()}
                     )
 
                     ToolTipItemComponent(
+                        isSelected = selectedToolTip == ToolTipType.BOARD_BRUSH,
                         icon = R.drawable.ic_brush,
                         onClickEvent = {onBrushEvent()}
                     )
 
                     ToolTipItemComponent(
+                        isSelected = selectedToolTip == ToolTipType.BOARD_HIGHLIGHTER,
                         icon = R.drawable.ic_highlighter,
                         onClickEvent = {onHighlighterEvent()}
                     )
 
                     ToolTipItemComponent(
+                        isSelected = selectedToolTip == ToolTipType.BOARD_ERASER,
                         icon = R.drawable.ic_eraser,
                         onClickEvent = {onEraserEvent()}
                     )
 
                     ToolTipItemComponent(
+                        isSelected = selectedToolTip == ToolTipType.BOARD_SHAPE,
                         icon = R.drawable.ic_shapes,
                         onClickEvent = {onShapesEvent()}
                     )
 
                     ToolTipItemComponent(
+                        isSelected = selectedToolTip == ToolTipType.BOARD_NOTE,
                         icon = R.drawable.ic_notes,
                         onClickEvent = {onNotesEvent()}
                     )
 
                     ToolTipItemComponent(
+                        isSelected = selectedToolTip == ToolTipType.BOARD_INSERT,
                         icon = R.drawable.ic_add,
                         onClickEvent = {onInsertEvent()}
                     )
 
                     ToolTipItemComponent(
+                        isSelected = selectedToolTip == ToolTipType.BOARD_REDO,
                         icon = R.drawable.ic_redo,
                         onClickEvent = {onRedoEvent()}
                     )
 
                     ToolTipItemComponent(
+                        isSelected = selectedToolTip == ToolTipType.BOARD_UNDO,
                         icon = R.drawable.ic_undo,
                         onClickEvent = {onUndoEvent()}
                     )
@@ -203,11 +213,17 @@ fun ToolTipComponent(
 
 @Composable
 fun ToolTipItemComponent(
+    isSelected: Boolean,
     @DrawableRes  icon : Int,
     onClickEvent : () -> Unit,
 ){
     IconButton (
         modifier = Modifier.Companion
+            .graphicsLayer {
+                val scale = if (isSelected) 1.2F else 1F
+                scaleX = scale
+                scaleY = scale
+            }
             .padding(vertical = 10.dp)
             .size(44.dp)
             .background(color = PrimaryButtonColor, shape = RoundedCornerShape(100)),
@@ -257,7 +273,7 @@ fun ToolTipItemExtendedComponent(
 
 @Composable
 fun BrushPaletteComponent(
-    onBrushSelected : (size : Int, color : Color) -> Unit
+    onBrushSelected : (size : Float, color : Color) -> Unit
 ){
     val colorList = listOf<Color>(
         ColorPaletteItem1, ColorPaletteItem2, ColorPaletteItem3, ColorPaletteItem4,
@@ -267,7 +283,7 @@ fun BrushPaletteComponent(
     )
 
     var selectedSize = remember {
-        mutableStateOf(1)
+        mutableStateOf(1f)
     }
 
     var selectedColor = remember {
@@ -299,14 +315,14 @@ fun BrushPaletteComponent(
                 IconButton(
                     modifier = Modifier.size(20.dp),
                     onClick = {
-                        selectedSize.value = 3
-                        onBrushSelected(3, selectedColor.value)
+                        selectedSize.value = 3f
+                        onBrushSelected(3f, selectedColor.value)
                     }
                 ) {
                     Column(
                         modifier = Modifier
                             .size(3.dp)
-                            .background(color = if (selectedSize.value == 3) PrimaryButtonColor else Color.Black, shape = RoundedCornerShape(100))
+                            .background(color = if (selectedSize.value == 3f) PrimaryButtonColor else Color.Black, shape = RoundedCornerShape(100))
                     ) {  }
                 }
 
@@ -314,14 +330,14 @@ fun BrushPaletteComponent(
                 IconButton(
                     modifier = Modifier.size(20.dp),
                     onClick = {
-                        selectedSize.value = 5
-                        onBrushSelected(5, selectedColor.value)
+                        selectedSize.value = 5f
+                        onBrushSelected(5f, selectedColor.value)
                     }
                 ) {
                     Column(
                         modifier = Modifier
                             .size(5.dp)
-                            .background(color = if (selectedSize.value == 5) PrimaryButtonColor else  Color.Black, shape = RoundedCornerShape(100))
+                            .background(color = if (selectedSize.value == 5f) PrimaryButtonColor else  Color.Black, shape = RoundedCornerShape(100))
                     ) {  }
                 }
 
@@ -329,14 +345,14 @@ fun BrushPaletteComponent(
                 IconButton(
                     modifier = Modifier.size(20.dp),
                     onClick = {
-                        selectedSize.value = 7
-                        onBrushSelected(7, selectedColor.value)
+                        selectedSize.value = 7f
+                        onBrushSelected(7f, selectedColor.value)
                     }
                 ) {
                     Column(
                         modifier = Modifier
                             .size(7.dp)
-                            .background(color = if (selectedSize.value == 7) PrimaryButtonColor else Color.Black, shape = RoundedCornerShape(100))
+                            .background(color = if (selectedSize.value == 7f) PrimaryButtonColor else Color.Black, shape = RoundedCornerShape(100))
                     ) {  }
 
                 }
@@ -345,28 +361,28 @@ fun BrushPaletteComponent(
                 IconButton(
                     modifier = Modifier.size(20.dp),
                     onClick = {
-                        selectedSize.value = 9
-                        onBrushSelected(9, selectedColor.value)
+                        selectedSize.value = 9f
+                        onBrushSelected(9f, selectedColor.value)
                     }
                 ) {
                     Column(
                         modifier = Modifier
                             .size(9.dp)
-                            .background(color = if (selectedSize.value == 9) PrimaryButtonColor else Color.Black, shape = RoundedCornerShape(100))
+                            .background(color = if (selectedSize.value == 9f) PrimaryButtonColor else Color.Black, shape = RoundedCornerShape(100))
                     ) {  }
                 }
 
                 IconButton(
                     modifier = Modifier.size(20.dp),
                     onClick = {
-                        selectedSize.value = 11
-                        onBrushSelected(11, selectedColor.value)
+                        selectedSize.value = 11f
+                        onBrushSelected(11f, selectedColor.value)
                     }
                 ) {
                     Column(
                         modifier = Modifier
                             .size(11.dp)
-                            .background(color = if (selectedSize.value == 11) PrimaryButtonColor else Color.Black, shape = RoundedCornerShape(100))
+                            .background(color = if (selectedSize.value == 11f) PrimaryButtonColor else Color.Black, shape = RoundedCornerShape(100))
 
                     ) {  }
                 }
@@ -406,7 +422,7 @@ fun BrushPaletteComponent(
 
 @Composable
 fun EraserComponent(
-    selectedEraser : (size : Int) -> Unit
+    selectedEraser : (size : Float) -> Unit
 ) {
     Column(
         modifier = Modifier
@@ -430,7 +446,7 @@ fun EraserComponent(
                     .size(5.dp)
                     .background(color = Color.Black, shape = RoundedCornerShape(100))
                     .clickable {
-                        selectedEraser(5)
+                        selectedEraser(5f)
                     }
             ) {  }
 
@@ -439,7 +455,7 @@ fun EraserComponent(
                     .size(10.dp)
                     .background(color = Color.Black, shape = RoundedCornerShape(100))
                     .clickable {
-                        selectedEraser(10)
+                        selectedEraser(10f)
                     }
             ) {  }
 
@@ -448,7 +464,7 @@ fun EraserComponent(
                     .size(15.dp)
                     .background(color = Color.Black, shape = RoundedCornerShape(100))
                     .clickable {
-                        selectedEraser(15)
+                        selectedEraser(15f)
                     }
             ) {  }
 
@@ -457,7 +473,7 @@ fun EraserComponent(
                     .size(20.dp)
                     .background(color = Color.Black, shape = RoundedCornerShape(100))
                     .clickable {
-                        selectedEraser(20)
+                        selectedEraser(20f)
                     }
             ) {  }
 
@@ -466,7 +482,7 @@ fun EraserComponent(
                     .size(25.dp)
                     .background(color = Color.Black, shape = RoundedCornerShape(100))
                     .clickable {
-                        selectedEraser(25)
+                        selectedEraser(25f)
 
                     }
             ) {  }
