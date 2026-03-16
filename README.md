@@ -22,3 +22,5 @@ In Progress :
 * Package optimization
 * other tooltips implementation
 
+<img width="1538" height="894" alt="Image" src="https://github.com/user-attachments/assets/8d0feff4-83df-402e-92eb-e7894cb192f3" />
+<img width="1538" height="894" alt="Image" src="https://github.com/user-attachments/assets/92797ba8-48ee-49dc-b3c6-9fb623ff3b5f" />
