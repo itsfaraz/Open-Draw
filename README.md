@@ -14,13 +14,10 @@ Description :
 * Migrating to newer api with compose with backward compatibility support with xml
 
 Deliverables : 
-* Home & Board Prototype with brush, eraser and highlighter support
-
-In Progress :
-* Undo, redo
-* Import, export
-* Package optimization
-* other tooltips implementation
+* Home & Board updated UI with brush, eraser, highlighter, multiple shapes, etc
+* Undo & Redo optimized for minor changes
+* Import and Export with json file
+ 
 
 <img width="1538" height="894" alt="Image" src="https://github.com/user-attachments/assets/8d0feff4-83df-402e-92eb-e7894cb192f3" />
 <img width="1538" height="894" alt="Image" src="https://github.com/user-attachments/assets/92797ba8-48ee-49dc-b3c6-9fb623ff3b5f" />
