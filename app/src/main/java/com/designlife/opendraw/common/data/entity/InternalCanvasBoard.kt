@@ -7,6 +7,7 @@ import androidx.compose.ui.graphics.fromColorLong
 import androidx.room.Entity
 import androidx.room.PrimaryKey
 import com.designlife.opendraw.board.data.PathData
+import com.designlife.opendraw.board.domain.enums.ShapeType
 import com.designlife.opendraw.common.utils.ServiceLocator
 import com.designlife.opendraw.home.domain.converters.ColorConverter
 import kotlinx.serialization.Serializable
@@ -47,8 +48,30 @@ data class InternalCanvasBoard(
         @Serializable
         val bottomRight: Pair<Float,Float>,
         @Serializable
-        val color: Float
-    )
+        val color: String = ""
+    ){
+        fun getShapeEnum() : ShapeType{
+            return if (type.equals(ShapeType.CIRCLE.name)){ ShapeType.CIRCLE }
+            else if (type.equals(ShapeType.SQUARE.name)){
+                ShapeType.SQUARE
+            }
+            else if (type.equals(ShapeType.RECTANGLE.name)){
+                ShapeType.RECTANGLE
+            }
+            else if (type.equals(ShapeType.STAR.name)){
+                ShapeType.STAR
+            }
+            else if (type.equals(ShapeType.ELLIPSE.name)){
+                ShapeType.ELLIPSE
+            }
+            else if (type.equals(ShapeType.POLYGON.name)){
+                ShapeType.POLYGON
+            }
+            else if (type.equals(ShapeType.LINE.name)){
+                ShapeType.LINE
+            }else ShapeType.UN_DEFINED
+        }
+    }
 
     @Serializable
     data class Text(
@@ -57,7 +80,7 @@ data class InternalCanvasBoard(
         @Serializable
         val position:  Pair<Float,Float>,
         @Serializable
-        val color: Int,
+        val color: String,
         @Serializable
         val size: Float
     )

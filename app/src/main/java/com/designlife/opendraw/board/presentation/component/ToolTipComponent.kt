@@ -198,7 +198,10 @@ fun ToolTipComponent(
                 }
 
                 ToolTipItemExtendedComponent(componentType = ToolTipType.BOARD_BRUSH, isActive = ToolTipType.BOARD_BRUSH == selectedToolTip){
-                    BrushPaletteComponent(onBrushSelected = {size, color ->  onBrushSelected(size,color)})
+                    BrushPaletteComponent(onBrushSelected = {size, color ->
+                        onBrushSelected(size,color)
+                        onCanvasActionTypeEvent(CanvasActionType.DRAW_BRUSH)
+                    })
                 }
 
                 ToolTipItemExtendedComponent(componentType = ToolTipType.BOARD_HIGHLIGHTER, isActive = ToolTipType.BOARD_HIGHLIGHTER == selectedToolTip){
@@ -206,7 +209,10 @@ fun ToolTipComponent(
                 }
 
                 ToolTipItemExtendedComponent(componentType = ToolTipType.BOARD_ERASER, isActive = ToolTipType.BOARD_ERASER == selectedToolTip){
-                    EraserComponent { onEraserSelected(it) }
+                    EraserComponent {
+                        onEraserSelected(it)
+                        onCanvasActionTypeEvent(CanvasActionType.DRAW_ERASER)
+                    }
                 }
 
                 ToolTipItemExtendedComponent(componentType = ToolTipType.BOARD_SHAPE, isActive = ToolTipType.BOARD_SHAPE == selectedToolTip){
@@ -217,7 +223,10 @@ fun ToolTipComponent(
                 }
 
                 ToolTipItemExtendedComponent(componentType = ToolTipType.BOARD_NOTE, isActive = ToolTipType.BOARD_NOTE == selectedToolTip){
-                    NoteComponent { onNoteColorSelected(it) }
+                    NoteComponent {
+                        onNoteColorSelected(it)
+                        onCanvasActionTypeEvent(CanvasActionType.DRAW_NOTE)
+                    }
                 }
 
                 ToolTipItemExtendedComponent(componentType = ToolTipType.BOARD_INSERT, isActive = ToolTipType.BOARD_INSERT == selectedToolTip){
