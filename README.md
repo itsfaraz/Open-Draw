@@ -1,6 +1,9 @@
 # Open Draw - Make learning engaging
 A libre drawing application for mobile, tablet, and ifp
 
+### Preview
+[![Open Draw Preview Video](https://img.youtube.com/vi/youtu.be/dCDEPPuDKqE/0.jpg)](https://youtu.be/dCDEPPuDKqE)
+
 
 ### Developer Guide
 
@@ -21,3 +24,16 @@ Deliverables :
 
 <img width="1538" height="894" alt="Image" src="https://github.com/user-attachments/assets/8d0feff4-83df-402e-92eb-e7894cb192f3" />
 <img width="1538" height="894" alt="Image" src="https://github.com/user-attachments/assets/92797ba8-48ee-49dc-b3c6-9fb623ff3b5f" />
+
+
+
+
+### Android Specific
+
+Optimized layout to support legacy and latest api, (XML, Canvas) : (Minimum SDK 24)
+* MVVM Clean Architecture
+* Single Activity Architecture
+* Fragment with compose interoperability
+* State flow for capturing minor details
+  
+<img width="418" height="489" alt="image" src="https://github.com/user-attachments/assets/29f983fa-8097-43d0-9382-443ec8cfe591" />
