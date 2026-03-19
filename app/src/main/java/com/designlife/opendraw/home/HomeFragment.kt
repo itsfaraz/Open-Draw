@@ -1,48 +1,78 @@
 package com.designlife.opendraw.home
 
+import android.content.Intent
+import android.net.Uri
 import android.os.Bundle
+import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.activity.result.ActivityResultLauncher
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.background
-import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.FloatingActionButton
-import androidx.compose.material.Icon
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.ComposeView
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
+import androidx.core.os.bundleOf
 import androidx.lifecycle.ViewModelProvider
-import androidx.navigation.findNavController
+import androidx.navigation.fragment.findNavController
 import com.designlife.opendraw.home.domain.usecase.HomeUseCase
 import com.designlife.opendraw.home.presentation.component.BoardListComponent
 import com.designlife.opendraw.home.presentation.component.HomeBottomComponent
 import com.designlife.opendraw.home.presentation.component.HomeHeaderComponent
 import com.designlife.opendraw.home.presentation.viewmodel.HomeViewModel
 import com.designlife.opendraw.home.presentation.viewmodel.HomeViewModelFactory
-import com.designlife.opendraw.ui.theme.PrimaryButtonColor
 import com.designlife.opendraw.ui.theme.PrimaryColorHome1
 import com.designlife.opendraw.R
+import com.designlife.opendraw.common.utils.ServiceLocator
+import com.designlife.opendraw.home.presentation.component.FloatingEditMenuComponent
+
 class HomeFragment : Fragment() {
+
+
+    private lateinit var openFileLauncher: ActivityResultLauncher<Array<String>>
+
 
     private lateinit var viewModel: HomeViewModel
 
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        val factory = HomeViewModelFactory()
+        val boardRepository = ServiceLocator.provideBoardRepository(requireContext())
+        val factory = HomeViewModelFactory(boardRepository)
         viewModel = ViewModelProvider(this,factory)[HomeViewModel::class.java]
+        openFileLauncher =
+            registerForActivityResult(ActivityResultContracts.OpenDocument()) { uri ->
+                uri?.let {
+                    // Persist permission (important!)
+                    requireContext().contentResolver.takePersistableUriPermission(
+                        it,
+                        Intent.FLAG_GRANT_READ_URI_PERMISSION or
+                                Intent.FLAG_GRANT_WRITE_URI_PERMISSION
+                    )
+
+                    readFromUri(it)
+                }
+            }
+
+    }
+
+    private fun readFromUri(uri: Uri) {
+        val text = requireContext().contentResolver
+            .openInputStream(uri)
+            ?.bufferedReader()
+            ?.use { it.readText() }
+        text?.let {
+            viewModel.onEvent(HomeUseCase.OnImportEvent(text))
+        }
     }
 
     override fun onCreateView(
@@ -80,7 +110,9 @@ class HomeFragment : Fragment() {
                             }
                         )
                         Spacer(modifier = Modifier.height(30.dp))
-                        BoardListComponent(boardList) {  }
+                        BoardListComponent(boardList) { boardId ->
+                            navigateToBoardFragmentById(boardId)
+                        }
                         Spacer(modifier = Modifier.height(10.dp))
                         if (bottomBarView){
                             HomeBottomComponent(
@@ -90,29 +122,51 @@ class HomeFragment : Fragment() {
                                 },
                                 addCreateBoard = {
                                     viewModel.onEvent(HomeUseCase.CreateBoardEvent)
-                                    findNavController().navigate(R.id.boardFragment)
+                                    navigateToBoardFragment()
                                 }
                             )
                         }
                     }
-                    FloatingActionButton(
-                        modifier = Modifier.Companion
-                            .padding(bottom = 65.dp, end = 20.dp)
-                            .border(width = 3.dp, color = Color.White, shape = RoundedCornerShape(100))
-                            .size(48.dp),
-                        onClick = {  },
-                        backgroundColor = PrimaryButtonColor,
-                    ) {
-                        Icon(
-                            modifier = Modifier.size(25.dp),
-                            painter = painterResource(R.drawable.ic_setting),
-                            contentDescription = "FAB",
-                            tint = Color.White
+
+                    Box(contentAlignment = Alignment.BottomEnd) {
+                        FloatingEditMenuComponent(
+                            onImportEvent = {
+//                                viewModel.onEvent(HomeUseCase.OnImportEvent(requireContext()))
+                                openFileLauncher.launch(arrayOf("*/*"))
+                            },
+                            onDarkModeToggle = {
+
+                            }
                         )
                     }
+
                 }
 
             }
         }
+    }
+
+    fun navigateToBoardFragmentById(boardId : Long){
+        val bundle = bundleOf()
+        bundle.putLong("boardId", boardId)
+        bundle.putString("boardName", "")
+        bundle.putLong("createdAt", 0L)
+        findNavController().navigate(
+            R.id.boardFragment,
+            bundle
+        )
+        Log.d("FLOW","HomeFragment :: navigateToBoardFragmentById : Board Id = ${boardId}")
+    }
+    fun navigateToBoardFragment(){
+        val bundle = bundleOf()
+        bundle.putLong("boardId", 404L)
+        bundle.putString("boardTitle", viewModel.boardTitle.value)
+        bundle.putLong("createdAt", System.currentTimeMillis())
+        findNavController().navigate(
+            R.id.boardFragment,
+            bundle
+        )
+        Log.d("FLOW","HomeFragment :: navigateToBoardFragment : Board Id = 404 , Board Title = ${viewModel.boardTitle.value}")
+
     }
 }

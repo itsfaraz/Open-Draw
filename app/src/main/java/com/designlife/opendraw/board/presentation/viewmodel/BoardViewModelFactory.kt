@@ -1,13 +1,13 @@
-package com.designlife.opendraw.home.presentation.viewmodel
+package com.designlife.opendraw.board.presentation.viewmodel
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import com.designlife.opendraw.common.domain.repository.BoardRepository
 
-class HomeViewModelFactory(
+class BoardViewModelFactory(
     private val boardRepository: BoardRepository
 ) : ViewModelProvider.Factory {
     override fun <T : ViewModel> create(modelClass: Class<T>): T {
-        return HomeViewModel(boardRepository) as T
+        return BoardViewModel(boardRepository) as T
     }
 }

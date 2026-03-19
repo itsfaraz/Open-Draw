@@ -20,6 +20,7 @@ import androidx.compose.foundation.layout.wrapContentWidth
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Card
 import androidx.compose.material.Icon
@@ -34,8 +35,10 @@ import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import com.designlife.opendraw.R
+import com.designlife.opendraw.board.domain.enums.CanvasActionType
 import com.designlife.opendraw.board.domain.enums.ShapeType
 import com.designlife.opendraw.board.domain.enums.ToolTipType
+import com.designlife.opendraw.ui.theme.ButtonPrimary
 import com.designlife.opendraw.ui.theme.ColorNoteItem1
 import com.designlife.opendraw.ui.theme.ColorNoteItem2
 import com.designlife.opendraw.ui.theme.ColorNoteItem3
@@ -67,6 +70,7 @@ import com.designlife.opendraw.ui.theme.PrimaryColorLight
 @Composable
 fun ToolTipComponent(
     selectedToolTip : ToolTipType,
+    selectedShape : ShapeType,
     onTextEvent : () -> Unit,
     onBrushEvent : () -> Unit,
     onHighlighterEvent : () -> Unit,
@@ -79,7 +83,8 @@ fun ToolTipComponent(
     onBrushSelected : (size : Float,color : Color) -> Unit,
     onEraserSelected : (size : Float) -> Unit,
     onShapeSelected : (shapeType : ShapeType) -> Unit,
-    onNoteColorSelected : (color : Color) -> Unit
+    onNoteColorSelected : (color : Color) -> Unit,
+    onCanvasActionTypeEvent : (actionType : CanvasActionType) -> Unit
 ) {
     Column(
         modifier = Modifier
@@ -110,25 +115,37 @@ fun ToolTipComponent(
                     ToolTipItemComponent(
                         isSelected = selectedToolTip == ToolTipType.BOARD_TEXT,
                         icon = R.drawable.ic_text,
-                        onClickEvent = {onTextEvent()}
+                        onClickEvent = {
+                            onCanvasActionTypeEvent(CanvasActionType.DRAW_TEXT)
+                            onTextEvent()
+                        }
                     )
 
                     ToolTipItemComponent(
                         isSelected = selectedToolTip == ToolTipType.BOARD_BRUSH,
                         icon = R.drawable.ic_brush,
-                        onClickEvent = {onBrushEvent()}
+                        onClickEvent = {
+                            onCanvasActionTypeEvent(CanvasActionType.DRAW_BRUSH)
+                            onBrushEvent()
+                        }
                     )
 
                     ToolTipItemComponent(
                         isSelected = selectedToolTip == ToolTipType.BOARD_HIGHLIGHTER,
                         icon = R.drawable.ic_highlighter,
-                        onClickEvent = {onHighlighterEvent()}
+                        onClickEvent = {
+                            onCanvasActionTypeEvent(CanvasActionType.DRAW_HIGHLIGHTER)
+                            onHighlighterEvent()
+                        }
                     )
 
                     ToolTipItemComponent(
                         isSelected = selectedToolTip == ToolTipType.BOARD_ERASER,
                         icon = R.drawable.ic_eraser,
-                        onClickEvent = {onEraserEvent()}
+                        onClickEvent = {
+                            onCanvasActionTypeEvent(CanvasActionType.DRAW_ERASER)
+                            onEraserEvent()
+                        }
                     )
 
                     ToolTipItemComponent(
@@ -140,13 +157,19 @@ fun ToolTipComponent(
                     ToolTipItemComponent(
                         isSelected = selectedToolTip == ToolTipType.BOARD_NOTE,
                         icon = R.drawable.ic_notes,
-                        onClickEvent = {onNotesEvent()}
+                        onClickEvent = {
+                            onCanvasActionTypeEvent(CanvasActionType.DRAW_NOTE)
+                            onNotesEvent()
+                        }
                     )
 
                     ToolTipItemComponent(
                         isSelected = selectedToolTip == ToolTipType.BOARD_INSERT,
                         icon = R.drawable.ic_add,
-                        onClickEvent = {onInsertEvent()}
+                        onClickEvent = {
+                            onCanvasActionTypeEvent(CanvasActionType.DRAW_IMAGE)
+                            onInsertEvent()
+                        }
                     )
 
                     ToolTipItemComponent(
@@ -187,7 +210,10 @@ fun ToolTipComponent(
                 }
 
                 ToolTipItemExtendedComponent(componentType = ToolTipType.BOARD_SHAPE, isActive = ToolTipType.BOARD_SHAPE == selectedToolTip){
-                    ShapeComponent { onShapeSelected(it) }
+                    ShapeComponent(selectedShape) {type, canvasActionType ->
+                        onCanvasActionTypeEvent(canvasActionType)
+                        onShapeSelected(type)
+                    }
                 }
 
                 ToolTipItemExtendedComponent(componentType = ToolTipType.BOARD_NOTE, isActive = ToolTipType.BOARD_NOTE == selectedToolTip){
@@ -493,7 +519,8 @@ fun EraserComponent(
 
 @Composable
 fun ShapeComponent(
-    onShapeSelected : (type : ShapeType) -> Unit
+    selectedShape: ShapeType,
+    onShapeSelected : (type : ShapeType, canvasActionType : CanvasActionType) -> Unit
 ){
     Column(
         modifier = Modifier
@@ -514,78 +541,127 @@ fun ShapeComponent(
             item {
                 Column(
                     modifier = Modifier
-                        .size(50.dp)
+                        .graphicsLayer{
+                            val shape = if (selectedShape == ShapeType.CIRCLE) 1.3F else 1.0F
+                            scaleX = shape
+                            scaleY = shape
+                        }
+                        .size(60.dp)
+                        .border(width = 3.dp, color = Color.LightGray, shape = CircleShape)
                         .clickable {
-                            onShapeSelected(ShapeType.CIRCLE)
+                            onShapeSelected(ShapeType.CIRCLE, CanvasActionType.DRAW_CIRCLE)
                         },
-                    verticalArrangement = Arrangement.Center
-                ) { Icon(painter = painterResource(R.drawable.ic_circle), contentDescription = "Shape Icon", tint = Color.Black) }
+                    verticalArrangement = Arrangement.Center,
+                    horizontalAlignment = Alignment.CenterHorizontally
+                ) { Icon(modifier = Modifier.size(45.dp), painter = painterResource(R.drawable.ic_circle), contentDescription = "Shape Icon", tint = Color.Blue) }
                 Spacer(modifier = Modifier.width(10.dp))
             }
             item {     Column(
                 modifier = Modifier
-                    .size(50.dp)
+                    .graphicsLayer{
+                        val shape = if (selectedShape == ShapeType.RECTANGLE) 1.3F else 1.0F
+                        scaleX = shape
+                        scaleY = shape
+                    }
+                    .size(60.dp)
+                    .border(width = 3.dp, color = Color.LightGray, shape = CircleShape)
                     .clickable {
-                        onShapeSelected(ShapeType.RECTANGLE)
+                        onShapeSelected(ShapeType.RECTANGLE, CanvasActionType.DRAW_RECTANGLE)
                     },
-                verticalArrangement = Arrangement.Center
-            ) { Icon(painter = painterResource(R.drawable.ic_rectangle), contentDescription = "Shape Icon", tint = Color.Black) }
+                verticalArrangement = Arrangement.Center,
+                horizontalAlignment = Alignment.CenterHorizontally
+            ) { Icon(modifier = Modifier.size(40.dp), painter = painterResource(R.drawable.ic_rectangle), contentDescription = "Shape Icon", tint = Color.Blue) }
                 Spacer(modifier = Modifier.width(10.dp))
             }
             item {
                 Column(
                     modifier = Modifier
-                        .size(50.dp)
+                        .graphicsLayer{
+                            val shape = if (selectedShape == ShapeType.SQUARE) 1.3F else 1.0F
+                            scaleX = shape
+                            scaleY = shape
+                        }
+                        .size(60.dp)
+                        .border(width = 3.dp, color = Color.LightGray, shape = CircleShape)
                         .clickable {
-                            onShapeSelected(ShapeType.SQUARE)
+                            onShapeSelected(ShapeType.SQUARE, CanvasActionType.DRAW_SQUARE)
                         },
-                    verticalArrangement = Arrangement.Center
-                ) { Icon(painter = painterResource(R.drawable.ic_square), contentDescription = "Shape Icon", tint = Color.Black) }
+                    verticalArrangement = Arrangement.Center,
+                    horizontalAlignment = Alignment.CenterHorizontally
+                ) { Icon(modifier = Modifier.size(40.dp),painter = painterResource(R.drawable.ic_square), contentDescription = "Shape Icon", tint = Color.Blue) }
                     Spacer(modifier = Modifier.width(10.dp))
             }
             item {
                 Column(
                     modifier = Modifier
-                        .size(50.dp)
+                        .graphicsLayer{
+                            val shape = if (selectedShape == ShapeType.LINE) 1.3F else 1.0F
+                            scaleX = shape
+                            scaleY = shape
+                        }
+                        .size(60.dp)
+                        .border(width = 3.dp, color = Color.LightGray, shape = CircleShape)
                         .clickable {
-                            onShapeSelected(ShapeType.LINE)
+                            onShapeSelected(ShapeType.LINE, CanvasActionType.DRAW_LINE)
                         },
-                    verticalArrangement = Arrangement.Center
-                ) { Icon(painter = painterResource(R.drawable.ic_line), contentDescription = "Shape Icon", tint = Color.Black) }
+                    verticalArrangement = Arrangement.Center,
+                    horizontalAlignment = Alignment.CenterHorizontally
+                ) { Icon(modifier = Modifier.size(45.dp),painter = painterResource(R.drawable.ic_line), contentDescription = "Shape Icon", tint = Color.Blue) }
                 Spacer(modifier = Modifier.width(10.dp))
             }
             item {
                 Column(
                     modifier = Modifier
-                        .size(50.dp)
+                        .graphicsLayer{
+                            val shape = if (selectedShape == ShapeType.STAR) 1.3F else 1.0F
+                            scaleX = shape
+                            scaleY = shape
+                        }
+                        .size(60.dp)
+                        .border(width = 3.dp, color = Color.LightGray, shape = CircleShape)
                         .clickable {
-                            onShapeSelected(ShapeType.STAR)
+                            onShapeSelected(ShapeType.STAR, CanvasActionType.DRAW_STAR)
                         },
-                    verticalArrangement = Arrangement.Center
-                ) { Icon(painter = painterResource(R.drawable.ic_star), contentDescription = "Shape Icon", tint = Color.Black) }
+                    verticalArrangement = Arrangement.Center,
+                    horizontalAlignment = Alignment.CenterHorizontally
+                ) { Icon(modifier = Modifier.size(45.dp),painter = painterResource(R.drawable.ic_star), contentDescription = "Shape Icon", tint = Color.Blue) }
                 Spacer(modifier = Modifier.width(10.dp))
             }
             item {
 
                 Column(
                     modifier = Modifier
-                        .size(50.dp)
+                        .graphicsLayer{
+                            val shape = if (selectedShape == ShapeType.ELLIPSE) 1.3F else 1.0F
+                            scaleX = shape
+                            scaleY = shape
+                        }
+                        .size(60.dp)
+                        .border(width = 3.dp, color = Color.LightGray, shape = CircleShape)
                         .clickable {
-                            onShapeSelected(ShapeType.ELLIPSE)
+                            onShapeSelected(ShapeType.ELLIPSE, CanvasActionType.DRAW_ELLIPSE)
                         },
-                    verticalArrangement = Arrangement.Center
-                ) { Icon(painter = painterResource(R.drawable.ic_ellipse), contentDescription = "Shape Icon", tint = Color.Black) }
+                    verticalArrangement = Arrangement.Center,
+                    horizontalAlignment = Alignment.CenterHorizontally
+                ) { Icon(modifier = Modifier.size(45.dp),painter = painterResource(R.drawable.ic_ellipse), contentDescription = "Shape Icon", tint = Color.Blue) }
                 Spacer(modifier = Modifier.width(10.dp))
             }
             item {
                 Column(
                     modifier = Modifier
-                        .size(50.dp)
+                        .graphicsLayer{
+                            val shape = if (selectedShape == ShapeType.POLYGON) 1.3F else 1.0F
+                            scaleX = shape
+                            scaleY = shape
+                        }
+                        .size(60.dp)
+                        .border(width = 3.dp, color = Color.LightGray, shape = CircleShape)
                         .clickable {
-                            onShapeSelected(ShapeType.POLYGON)
+                            onShapeSelected(ShapeType.POLYGON, CanvasActionType.DRAW_POLYGON)
                         },
-                    verticalArrangement = Arrangement.Center
-                ) { Icon(painter = painterResource(R.drawable.ic_polygon), contentDescription = "Shape Icon", tint = Color.Black) }
+                    verticalArrangement = Arrangement.Center,
+                    horizontalAlignment = Alignment.CenterHorizontally
+                ) { Icon(modifier = Modifier.size(40.dp),painter = painterResource(R.drawable.ic_polygon), contentDescription = "Shape Icon", tint = Color.Blue) }
                 Spacer(modifier = Modifier.width(10.dp))
 
             }

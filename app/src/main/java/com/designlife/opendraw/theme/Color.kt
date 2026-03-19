@@ -23,8 +23,11 @@ val ComponentDarkPrimary = Color(0x00262525)
 val TextComponentLight = Color(0xFFD7D7D7)
 
 
-val HighlighterColor = Color(0xFF1D5ABC)
+val HighlighterColor1 = Color(0xFF1D5ABC)
+val HighlighterColor2 = Color(0xFFE0E0E0)
+val HighlighterColor3 = Color(0xFFFFC517)
 
+var ButtonPrimary =  mutableStateOf(Color(0xFF7388FB))
 
 
 
@@ -76,7 +79,6 @@ val DarkTypographyDim = Color(0xFFFFFFFF)
 val DarkIcon = Color(0xFF000000)
 
 // Color Variables
-var ButtonPrimary =  mutableStateOf(Color(0xFF7388FB))
 var DangerButton =  mutableStateOf(Color(0xFFF73458))
 var PrimaryCardColor = mutableStateOf(LightPrimaryCardColor)
 var ButtonHighLightPrimary = mutableStateOf(LightButtonHighLightPrimary)

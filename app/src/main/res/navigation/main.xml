@@ -13,10 +13,19 @@
         android:name="com.designlife.opendraw.board.BoardFragment"
         android:label="BoardFragment">
         <argument
-            android:name="NoteId"
+            android:name="BoardId"
             app:argType="integer"
             android:defaultValue="-1"/>
+
+        <argument
+            android:name="BoardTitle"
+            app:argType="string"
+            android:defaultValue="White Board"/>
+
+        <argument
+            android:name="Created At"
+            app:argType="integer"
+            android:defaultValue="-1"/>
+
     </fragment>
-
-
 </navigation>

@@ -36,7 +36,7 @@ import com.designlife.opendraw.ui.theme.boardViewTitleTextStyle
 @Composable
 fun BoardListComponent(
     boardList : List<CanvasBoard>,
-    onBoardSelected : (id : Int) -> Unit
+    onBoardSelected : (boardId : Long) -> Unit
 ) {
     LazyVerticalGrid(
         columns = GridCells
@@ -50,7 +50,7 @@ fun BoardListComponent(
             count = boardList.size
         ){ index ->
             BoardItem(boardList.get(index)) {
-                onBoardSelected(index)
+                onBoardSelected(boardList.get(index).id)
             }
         }
     }

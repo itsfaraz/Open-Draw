@@ -5,7 +5,9 @@ import androidx.compose.material.MaterialTheme
 import androidx.compose.material.darkColors
 import androidx.compose.material.lightColors
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.graphics.Color
 import com.designlife.opendraw.common.enums.AppTheme
+import com.designlife.opendraw.home.domain.converters.ColorConverter
 
 
 private val DarkColorPalette = darkColors(
@@ -56,4 +58,15 @@ fun updateSystemUIMode(value: AppTheme) {
 //            SettingViewModel.updateDarkModeSetting(true)
         }
     }
+}
+
+fun randomColorString() : String{
+    val color = listOf<Color>(
+        ColorPaletteItem2,
+        ColorPaletteItem7,
+        ColorPaletteItem12,
+        ColorPaletteItem14,
+        ColorPaletteItem16)
+        .random()
+    return ColorConverter.serializeColor(color)
 }
